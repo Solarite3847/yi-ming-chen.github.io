@@ -37,14 +37,20 @@
         const db = getFirestore(app);
 
         // 🚀 發送留言函式
-        function sendMessage() {
-            const name = document.getElementById("nameInput").value.trim();
-            const message = document.getElementById("message").value.trim();
+       function sendMessage() {
+    const message = document.getElementById("message").value || "匿名留言"; // 預設匿名
 
-            if (!message) {
-                alert("請輸入留言內容！");
-                return;
-            }
+    db.collection("messages").add({
+        content: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log("✅ 留言成功寫入 Firestore!");
+        document.getElementById("message").value = ""; // 清空輸入框
+    }).catch((error) => {
+        console.error("❌ 錯誤:", error);
+    });
+}
+
 
             db.collection("messages").add({
                 name: name || "匿名",  // 如果沒有輸入名稱，就預設為「匿名」
