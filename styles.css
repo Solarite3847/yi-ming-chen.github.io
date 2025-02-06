@@ -13,6 +13,7 @@ body {
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    height: 800px;
     width: 400px;
     text-align: center;
 }
@@ -22,9 +23,9 @@ h1, h2 {
 }
 
 input, textarea {
-    width: 100%;
+    width: 95%;
     padding: 10px;
-    margin: 10px 2px;
+    margin: 10px 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
