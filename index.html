@@ -4,66 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>匿名留言板</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
-        textarea, input { width: 80%; padding: 10px; margin: 10px 0; }
-        button { background: #007BFF; color: white; padding: 10px; border: none; cursor: pointer; }
-        ul { list-style: none; padding: 0; }
-        li { background: white; margin: 10px auto; padding: 10px; border-radius: 5px; max-width: 80%; }
-    </style>
 </head>
 <body>
+    <h1>匿名留言板</h1>
+    <input type="text" id="name" placeholder="你的名字 (可留空)">
+    <textarea id="content" placeholder="寫點什麼..."></textarea>
+    <button onclick="sendMessage()">送出</button>
 
-    <h2>匿名留言板</h2>
-    <input type="text" id="nameInput" placeholder="你的名稱 (可留空)">
-    <br>
-    <textarea id="messageInput" placeholder="輸入你的留言..."></textarea>
-    <br>
-    <button onclick="sendMessage()">提交</button>
-
-    <ul id="messagesList"></ul>
+    <h2>留言：</h2>
+    <ul id="messages"></ul>
 
     <script>
-        const API_URL = "https://你的Vercel後端網址/messages";
+        const API_URL = "你的 Vercel API 位置/messages";
 
         async function sendMessage() {
-            const name = document.getElementById("nameInput").value;
-            const content = document.getElementById("messageInput").value;
+            const name = document.getElementById("name").value;
+            const content = document.getElementById("content").value;
 
-            if (!content.trim()) {
-                alert("留言內容不能為空！");
-                return;
-            }
-
-            const response = await fetch(API_URL, {
+            await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, content })
+                body: JSON.stringify({ name, content }),
             });
 
-            if (response.ok) {
-                document.getElementById("messageInput").value = "";
-                loadMessages();
-            } else {
-                alert("留言失敗，請稍後再試！");
-            }
+            loadMessages();
         }
 
         async function loadMessages() {
-            const response = await fetch(API_URL);
-            const messages = await response.json();
-            const list = document.getElementById("messagesList");
-
-            list.innerHTML = "";
-            messages.forEach(msg => {
-                const li = document.createElement("li");
-                li.textContent = `${msg.name}: ${msg.content}`;
-                list.appendChild(li);
-            });
+            const res = await fetch(API_URL);
+            const messages = await res.json();
+            const messagesList = document.getElementById("messages");
+            messagesList.innerHTML = messages.map(m => `<li><strong>${m.name}:</strong> ${m.content}</li>`).join("");
         }
 
         loadMessages();
     </script>
-
 </body>
 </html>
