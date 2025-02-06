@@ -40,20 +40,31 @@ const db = admin.firestore();
 
 // 📨 提交留言
 app.post("/messages", async (req, res) => {
-    const { name, content } = req.body;
-    if (!content) return res.status(400).json({ error: "留言內容不能為空" });
+  const { name, content } = req.body;
+  console.log("Received message:", { name, content });
 
-    try {
-        await db.collection("messages").add({
-            name: name || "匿名",
-            content,
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        });
-        res.status(200).json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: "留言存儲失敗" });
-    }
+  if (!content) return res.status(400).json({ error: "留言內容不能為空" });
+
+  try {
+    await db.collection("messages").add({
+      name: name || "匿名",
+      content,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    console.log("Message saved successfully!");
+
+    res.status(200).json({
+      success: true,
+      message: "留言成功",
+      data: { name, content },
+    });
+  } catch (error) {
+    console.error("Error saving message:", error);
+    res.status(500).json({ error: "留言存儲失敗" });
+  }
 });
+
 
 app.get("/", (req, res) => {
   res.send("🐾 嗷嗷～匿名留言板伺服器跑起來了！🚀");
