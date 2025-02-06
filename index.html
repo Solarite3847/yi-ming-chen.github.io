@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>匿名留言板</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        // 找到 head 中的 link 標籤
+        let link = document.querySelector("link[rel='stylesheet']");
+        
+        // 改變 href 屬性，加上一個時間戳或版本號
+        link.href = link.href.split("?")[0] + "?v=" + new Date().getTime();
+        </script>
 </head>
 <body>
     <div class="container">
@@ -15,7 +22,7 @@
         <br>
         <button onclick="sendMessage()">送出</button>
         <br>
-        
+
         <h2>留言：</h2>
         <ul id="messages"></ul>
     </div>
