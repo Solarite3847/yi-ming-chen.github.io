@@ -1,83 +1,69 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>匿名留言板</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+        textarea, input { width: 80%; padding: 10px; margin: 10px 0; }
+        button { background: #007BFF; color: white; padding: 10px; border: none; cursor: pointer; }
+        ul { list-style: none; padding: 0; }
+        li { background: white; margin: 10px auto; padding: 10px; border-radius: 5px; max-width: 80%; }
+    </style>
 </head>
-
 <body>
+
     <h2>匿名留言板</h2>
-    
     <input type="text" id="nameInput" placeholder="你的名稱 (可留空)">
     <br>
-    <textarea id="message" placeholder="輸入你的留言..."></textarea>
+    <textarea id="messageInput" placeholder="輸入你的留言..."></textarea>
     <br>
-    <button id="submitBtn">提交</button>
+    <button onclick="sendMessage()">提交</button>
 
     <ul id="messagesList"></ul>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+    <script>
+        const API_URL = "https://你的Vercel後端網址/messages";
 
-        // 🔥 初始化 Firebase
-        const firebaseConfig = {
-            apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-            authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-            projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-            storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-            messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-            appId: process.env.REACT_APP_FIREBASE_APP_ID
+        async function sendMessage() {
+            const name = document.getElementById("nameInput").value;
+            const content = document.getElementById("messageInput").value;
 
-            };
+            if (!content.trim()) {
+                alert("留言內容不能為空！");
+                return;
+            }
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, content })
+            });
 
-        // 🚀 發送留言函式
-       function sendMessage() {
-    const message = document.getElementById("message").value || "匿名留言"; // 預設匿名
+            if (response.ok) {
+                document.getElementById("messageInput").value = "";
+                loadMessages();
+            } else {
+                alert("留言失敗，請稍後再試！");
+            }
+        }
 
-    db.collection("messages").add({
-        content: message,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        console.log("✅ 留言成功寫入 Firestore!");
-        document.getElementById("message").value = ""; // 清空輸入框
-    }).catch((error) => {
-        console.error("❌ 錯誤:", error);
-    });
-}
+        async function loadMessages() {
+            const response = await fetch(API_URL);
+            const messages = await response.json();
+            const list = document.getElementById("messagesList");
 
-
-            db.collection("messages").add({
-                name: name || "匿名",  // 如果沒有輸入名稱，就預設為「匿名」
-                content: message,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                document.getElementById("message").value = "";
-            }).catch((error) => {
-                console.error("Error adding message: ", error);
+            list.innerHTML = "";
+            messages.forEach(msg => {
+                const li = document.createElement("li");
+                li.textContent = `${msg.name}: ${msg.content}`;
+                list.appendChild(li);
             });
         }
 
-        // 🔹 綁定按鈕點擊事件
-        document.getElementById("submitBtn").addEventListener("click", sendMessage);
-
-        // 🔹 讀取並顯示留言（即時更新）
-        db.collection("messages").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-            const list = document.getElementById("messagesList");
-            list.innerHTML = "";
-            snapshot.forEach(doc => {
-                let li = document.createElement("li");
-                let data = doc.data();
-                li.textContent = `${data.name}: ${data.content}`;
-                list.appendChild(li);
-            });
-        });
+        loadMessages();
     </script>
-</body>
 
+</body>
 </html>
