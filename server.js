@@ -34,6 +34,11 @@ app.post("/messages", async (req, res) => {
     }
 });
 
+app.get("/", (req, res) => {
+  res.send("🐾 嗷嗷～匿名留言板伺服器跑起來了！🚀");
+});
+
+
 // 📜 讀取留言
 app.get("/messages", async (req, res) => {
     try {
