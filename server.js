@@ -5,8 +5,16 @@ const admin = require("firebase-admin");
 const dotenv = require("dotenv");
 
 dotenv.config();
+
 const app = express();
-app.use(cors());
+
+// 啟用 CORS，這樣可以讓不同網域的請求能夠進來
+app.use(cors({
+  origin: "https://yiming2718.github.io",  // 允許來自這個網址的請求
+  methods: "GET,POST", // 允許的請求方式
+  allowedHeaders: "Content-Type"  // 允許的標頭
+}));
+
 app.use(express.json());
 
 // 初始化 Firebase Admin SDK
