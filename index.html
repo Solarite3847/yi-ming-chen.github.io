@@ -4,15 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>匿名留言板</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>匿名留言板</h1>
-    <input type="text" id="name" placeholder="你的名字 (可留空)">
-    <textarea id="content" placeholder="寫點什麼..."></textarea>
-    <button onclick="sendMessage()">送出</button>
+    <div class="container">
+        <h1>匿名留言板</h1>
+        <input type="text" id="name" placeholder="你的名字 (可留空)">
+        <textarea id="content" placeholder="寫點什麼..."></textarea>
+        <button onclick="sendMessage()">送出</button>
 
-    <h2>留言：</h2>
-    <ul id="messages"></ul>
+        <h2>留言：</h2>
+        <ul id="messages"></ul>
+    </div>
 
     <script>
         const API_URL = "https://ym2718-github-umhvsfyzk-yimings-projects-245a6f94.vercel.app/messages";
@@ -20,6 +23,10 @@
         async function sendMessage() {
             const name = document.getElementById("name").value;
             const content = document.getElementById("content").value;
+            if (!content.trim()) {
+                alert("留言內容不能為空！");
+                return;
+            }
 
             await fetch(API_URL, {
                 method: "POST",
@@ -27,6 +34,7 @@
                 body: JSON.stringify({ name, content }),
             });
 
+            document.getElementById("content").value = ""; // 清空留言框
             loadMessages();
         }
 
@@ -34,7 +42,9 @@
             const res = await fetch(API_URL);
             const messages = await res.json();
             const messagesList = document.getElementById("messages");
-            messagesList.innerHTML = messages.map(m => `<li><strong>${m.name}:</strong> ${m.content}</li>`).join("");
+            messagesList.innerHTML = messages
+                .map(m => `<li><strong>${m.name}:</strong> ${m.content}</li>`)
+                .join("");
         }
 
         loadMessages();
