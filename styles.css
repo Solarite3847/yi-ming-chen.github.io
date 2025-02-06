@@ -23,10 +23,10 @@ h1, h2 {
 }
 
 input, textarea {
-    width: 95%;
+    width: 90%;
     height: 50px;
     padding: 15px;
-    margin: 10px 10px;
+    margin: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
