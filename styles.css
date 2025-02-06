@@ -24,7 +24,8 @@ h1, h2 {
 
 input, textarea {
     width: 95%;
-    padding: 10px;
+    height: auto;
+    padding: 15px;
     margin: 10px 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
