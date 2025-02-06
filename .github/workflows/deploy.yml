@@ -3,31 +3,31 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main  # 當你將程式推到 main 分支時，自動觸發部署
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # 使用 Ubuntu 環境運行
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2  # 檢出代碼
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '14'  # 設定 Node.js 版本，這裡使用 14
 
     - name: Install dependencies
       run: |
-        npm install
+        npm install  # 安裝所有依賴
 
     - name: Build the project
       run: |
-        npm run build
+        npm run build  # 如果需要，這裡可以加入構建步驟
 
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
+      uses: JamesIves/github-pages-deploy-action@v4  # 使用 GitHub Pages Action 部署
       with:
-        branch: gh-pages
-        folder: build
+        branch: gh-pages  # 部署到 gh-pages 分支
+        folder: build  # 指向生成的靜態文件目錄
