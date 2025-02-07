@@ -25,7 +25,9 @@ app.options("*", cors(corsOptions));
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://bulletin-board-f2c1c-default-rtdb.asia-southeast1.firebasedatabase.app"
 });
+
 
 const db = admin.firestore();
 
