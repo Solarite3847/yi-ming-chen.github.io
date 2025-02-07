@@ -28,36 +28,33 @@
     </div>
 
     <script>
-        const API_URL = "https://ym2718-github-umhvsfyzk-yimings-projects-245a6f94.vercel.app/messages";
+        const API_URL = "https://your-vercel-api.vercel.app/messages";
+async function sendMessage() {
+  const name = document.getElementById("name").value;
+  const content = document.getElementById("content").value;
+  if (!content.trim()) {
+    alert("留言內容不能為空！");
+    return;
+  }
+  await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, content }),
+  });
 
-        async function sendMessage() {
-            const name = document.getElementById("name").value;
-            const content = document.getElementById("content").value;
-            if (!content.trim()) {
-                alert("留言內容不能為空！");
-                return;
-            }
+  document.getElementById("content").value = "";
+  loadMessages();
+}
+async function loadMessages() {
+  const res = await fetch(API_URL);
+  const messages = await res.json();
+  const messagesList = document.getElementById("messages");
+  messagesList.innerHTML = messages
+    .map(m => `<li><strong>${m.name}:</strong> ${m.content}</li>`)
+    .join("");
+}
 
-            await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, content }),
-            });
-
-            document.getElementById("content").value = ""; // 清空留言框
-            loadMessages();
-        }
-
-        async function loadMessages() {
-            const res = await fetch(API_URL);
-            const messages = await res.json();
-            const messagesList = document.getElementById("messages");
-            messagesList.innerHTML = messages
-                .map(m => `<li><strong>${m.name}:</strong> ${m.content}</li>`)
-                .join("");
-        }
-
-        loadMessages();
+loadMessages();
     </script>
 
 
