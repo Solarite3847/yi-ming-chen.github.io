@@ -52,7 +52,7 @@ app.post("/messages", async (req, res) => {
     });
   } catch (error) {
     console.error("Error saving message:", error);
-    res.status(500).json({ error: "留言存儲失敗" });
+    res.status(500).json({ error: "留言儲存失敗" });
   }
 });
 
